@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf8f3">
+  <meta name="description" content="材料と作り方を記録し、また作りたい料理を見つける自分用のレシピ帳。">
+  <title>台所ノート</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="recipes.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="recipe-draft.js" defer></script>
+  <script src="recipe-ocr.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H20M7.5 3H20v19H7.5A2.5 2.5 0 0 1 5 19.5v-14A2.5 2.5 0 0 1 7.5 3Z"/><path d="M10 8h6m-6 4h4"/></symbol>
+    <symbol id="i-pot" viewBox="0 0 24 24"><path d="M4 12v5a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-5M2 12h20M4 9h16M10 9V6h4v3"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.9a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.4 8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4.5 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="7.5" r="3"/><path d="M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m1-15a3 3 0 0 1 0 6m3 9v-2a4 4 0 0 0-2.5-3.7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="8" cy="7" r="2.5"/><circle cx="16" cy="17" r="2.5"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m13.5 6.5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m4 17 4-4 3.5 3.5 4-5 4.5 5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3m-5 5 5-5 5 5M4 16v4h16v-4"/></symbol>
+  </svg>
+
+  <header class="masthead">
+    <div class="container header-layout">
+      <a class="brand" href="./" aria-label="台所ノート トップ">
+        <span class="brand-icon"><svg class="icon" aria-hidden="true"><use href="#i-pot"/></svg></span>
+        <span>台所ノート<small>KITCHEN NOTE</small></span>
+      </a>
+      <nav class="navigation" aria-label="レシピの表示">
+        <button class="nav-button" type="button" data-view="all" aria-pressed="true"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>レシピ一覧</button>
+        <button class="nav-button" type="button" data-view="favorites" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg>お気に入り</button>
+      </nav>
+      <div class="header-actions">
+        <button class="button icon-button settings-button" type="button" data-open-backup aria-label="データの管理" title="データの管理"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+        <button class="button primary add-button" type="button" data-add><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>レシピを追加</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="hero-kicker"><span></span> わたしのレシピ帳</p>
+        <h1 id="hero-title">今日、なに<br>作ろう<span>。</span></h1>
+        <p class="hero-description">いつもの一皿も、また作りたい味も。<br>お気に入りのレシピをひとつの場所に。</p>
+        <button class="button hero-button" type="button" data-browse>レシピを見る <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+      <div class="hero-photo"><img src="assets/kitchen.webp" alt="色鮮やかな野菜とごはんを盛りつけた一皿" fetchpriority="high"></div>
+    </section>
+
+    <section id="recipe-section" class="recipe-section" aria-labelledby="collection-title">
+      <div class="collection-head">
+        <div class="collection-heading">
+          <h2 id="collection-title" tabindex="-1">レシピ一覧</h2>
+          <span id="recipe-count" class="count" role="status"></span>
+        </div>
+        <label class="search">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <span class="visually-hidden">レシピを検索</span>
+          <input id="search" type="search" placeholder="料理名・食材・タグで検索" autocomplete="off">
+        </label>
+      </div>
+      <div class="collection-controls">
+        <div id="categories" class="categories" role="group" aria-label="カテゴリーで絞り込み"></div>
+        <label class="sort">
+          <span class="visually-hidden">表示順</span>
+          <select id="sort">
+            <option value="recent">新着順</option>
+            <option value="quick">時間が短い順</option>
+            <option value="name">名前順</option>
+          </select>
+          <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+        </label>
+      </div>
+      <div id="recipe-grid" class="recipe-grid"></div>
+      <div id="empty" class="empty" hidden>
+        <span class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span>
+        <h3 id="empty-title"></h3>
+        <p id="empty-text"></p>
+        <button id="clear-filters" class="button" type="button" hidden>絞り込みを解除</button>
+        <button id="empty-add" class="button primary" type="button" data-add hidden><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>レシピを追加</button>
+      </div>
+      <noscript><p>レシピを表示・管理するには JavaScript を有効にしてください。</p></noscript>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <span><svg class="icon" aria-hidden="true"><use href="#i-pot"/></svg> 台所ノート</span>
+    <button class="text-button" type="button" data-open-backup>データの管理</button>
+  </footer>
+
+  <dialog id="detail-dialog" aria-labelledby="detail-title">
+    <div class="dialog-top">
+      <span class="dialog-label">レシピ</span>
+      <button class="button icon-button" type="button" data-close aria-label="閉じる" autofocus><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div id="detail-content"></div>
+  </dialog>
+
+  <dialog id="editor-dialog" aria-labelledby="editor-title">
+    <div class="dialog-top">
+      <h2 id="editor-title">レシピを追加</h2>
+      <button class="button icon-button" type="button" data-close aria-label="閉じる"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <form id="recipe-form" class="recipe-form">
+      <div class="ocr-entry">
+        <button id="ocr-open" class="button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>本の写真から入力</button>
+        <span id="ocr-draft-status" class="subtle" role="status" hidden></span>
+      </div>
+      <label>料理名 <span class="required">必須</span><input name="title" maxlength="80" required autofocus placeholder="例：きのこのあんかけそば"></label>
+      <div class="form-columns">
+        <label>カテゴリー<select name="category"></select></label>
+        <label>調理時間（分）<input name="minutes" type="number" min="1" max="9999" placeholder="15"></label>
+        <label>人数（人分）<input name="servings" type="number" min="1" max="9999" placeholder="2"></label>
+      </div>
+      <label>材料 <small>1行に1つ</small><textarea name="ingredients" rows="4" maxlength="6000" placeholder="そば 2束&#10;しめじ 1パック"></textarea></label>
+      <label>作り方 <small>1行に1工程</small><textarea name="steps" rows="4" maxlength="10000" placeholder="そばを表示どおりにゆでる。"></textarea></label>
+      <label>メモ<textarea name="description" rows="2" maxlength="2000" placeholder="味付けのコツや次回のメモ"></textarea></label>
+      <label>タグ <small>読点またはカンマ区切り</small><input name="tags" maxlength="240" placeholder="時短、平日ごはん"></label>
+      <div class="photo-field">
+        <label>料理の写真 <small>JPEG・PNG・WebP、10 MBまで</small><input name="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>
+        <div id="photo-preview-row" class="photo-preview" hidden>
+          <img id="photo-preview" alt="設定中の料理写真">
+          <button id="remove-photo" type="button" class="text-button">写真を外す</button>
+        </div>
+      </div>
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="button" type="button" data-close>キャンセル</button>
+        <button id="save-recipe" class="button primary" type="submit">保存する</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="ocr-dialog" aria-labelledby="ocr-title">
+    <div class="dialog-top">
+      <h2 id="ocr-title">本の写真から入力</h2>
+      <button class="button icon-button" type="button" data-close aria-label="閉じる"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="recipe-form">
+      <p class="subtle">1品分の材料と作り方が写った写真を選んでください。写真はブラウザー内で読み取ります。</p>
+      <div class="ocr-upload">
+        <label>料理本のページ写真 <small>JPEG・PNG・WebP、20 MBまで</small><input id="ocr-image" type="file" accept="image/jpeg,image/png,image/webp" autofocus></label>
+        <label>文字の向き<select id="ocr-direction"><option value="horizontal">横書き</option><option value="vertical">縦書き</option></select></label>
+      </div>
+      <img id="ocr-preview" class="ocr-preview" alt="読み取り対象の料理本のページ" hidden>
+      <div>
+        <button id="ocr-read" class="button" type="button" disabled>文字を読み取る</button>
+        <p id="ocr-feedback" class="ocr-feedback" role="status"></p>
+      </div>
+      <label>文字起こし<textarea id="ocr-transcript" rows="7" placeholder="読み取った文字が表示されます。文字を直接貼り付けることもできます。"></textarea></label>
+      <label class="ocr-overwrite"><input type="checkbox" id="ocr-overwrite">入力済みの項目も置き換える</label>
+      <div class="dialog-actions">
+        <button class="button" type="button" data-close>キャンセル</button>
+        <button id="ocr-apply" class="button primary" type="button">下書きを反映</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="delete-dialog" class="compact-dialog" aria-labelledby="delete-title">
+    <div class="dialog-top">
+      <h2 id="delete-title">レシピを削除</h2>
+      <button class="button icon-button" type="button" data-close aria-label="閉じる"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="dialog-body">
+      <p id="delete-message"></p>
+      <div class="dialog-actions">
+        <button class="button" type="button" data-close autofocus>キャンセル</button>
+        <button id="confirm-delete" class="button danger" type="button">削除する</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="backup-dialog" class="compact-dialog" aria-labelledby="backup-title">
+    <div class="dialog-top">
+      <h2 id="backup-title">データの管理</h2>
+      <button class="button icon-button" type="button" data-close aria-label="閉じる" autofocus><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="dialog-body">
+      <p>登録したレシピは今のブラウザーに保存されます。バックアップを使うと別の端末へ移せます。</p>
+      <div class="backup-actions">
+        <button id="export-recipes" class="button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>バックアップを保存</button>
+        <button id="import-recipes" class="button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg>バックアップを読み込む</button>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+      </div>
+      <p class="subtle">登録済みのレシピを残し、新しいレシピだけを追加します。</p>
+      <p id="backup-result" class="backup-result" role="status" hidden></p>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
